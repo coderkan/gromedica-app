@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="coderkan">
+        <createTable tableName="tbl_item">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true" />
+            </column>
+            <column name="source" type="varchar(255)">
+            </column>
+            <column name="code_list_code" type="varchar(255)">
+            </column>
+            <column name="display_value" type="varchar(1000)">
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="long_description" type="varchar(2000)">
+            </column>
+            <column name="from_date" type="date">
+            </column>
+            <column name="to_date" type="date">
+            </column>
+            <column name="sorting_priority" type="int">
+            </column>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>
