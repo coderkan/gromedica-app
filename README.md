@@ -2,6 +2,9 @@
 
 ---
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/coderkan/gromedica-app/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/coderkan/gromedica-app/tree/main)
+
+
 We would like you to write a small (yet realistic) application (that we expect would take roughly 1-2 hour to develop).
 
 Conditions:
