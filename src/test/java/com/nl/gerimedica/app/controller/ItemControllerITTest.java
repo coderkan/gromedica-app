@@ -2,6 +2,7 @@ package com.nl.gerimedica.app.controller;
 
 import com.nl.gerimedica.app.entity.ItemEntity;
 import com.nl.gerimedica.app.exception.NotFoundEntityException;
+import com.nl.gerimedica.app.exception.UnsupportedFileFormatException;
 import com.nl.gerimedica.app.repository.ItemRepository;
 import com.nl.gerimedica.app.util.CSVUtil;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -68,19 +71,50 @@ class ItemControllerITTest {
 
     @Test
     void uploadCSVFile() throws Exception {
-
-        /*
         File file = new File("exercise.csv");
         InputStream inputStream = new FileInputStream(file);
 
-        MockMultipartFile multipartFile = new MockMultipartFile("exercise.csv", "", "text/csv", inputStream);
+        assertNotNull(file);
+        assertNotNull(inputStream);
 
-        mockMvc.perform( //
-                multipart("/item") //
-                        .file(multipartFile) //
-        ).andExpect(status().isOk());
-        */
+        // prepare multipart file
+        MockMultipartFile firstFile = new MockMultipartFile(
+                "file", file.getName(),
+                "text/csv",
+                inputStream);
 
+        assertNotNull(firstFile);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/item")
+                .file(firstFile))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void testUploadCSVFileShouldThrowUnsupportedFileFormatException() throws Exception {
+        File file = new File("exercise.csv");
+        InputStream inputStream = new FileInputStream(file);
+
+        assertNotNull(file);
+        assertNotNull(inputStream);
+
+        // prepare multipart file
+        MockMultipartFile firstFile = new MockMultipartFile(
+                "file", file.getName(),
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                inputStream);
+
+        assertNotNull(firstFile);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/item")
+                .file(firstFile))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UnsupportedFileFormatException))
+                .andExpect(result -> assertEquals("Unsupported File Format", result.getResolvedException().getMessage()))
+                .andDo(print());
     }
 
     @Test
